@@ -39,11 +39,7 @@ form
     class="space-y-8 w-full max-w-md"
   >
     {#each $form.reports as _, i}
-      <ReportForm
-        name="report[{i}]"
-        label="report[{i}]"
-        bind:value={$form.reports[i]}
-      />
+      <ReportForm superform={pageForm} label={`Report ${i + 1}`} index={i} />
     {/each}
 
     <button type="button" class="btn w-full" on:click={addReport}

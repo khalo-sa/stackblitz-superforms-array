@@ -1,16 +1,20 @@
 <script lang="ts">
-  import type { ReportSchema } from "./schema.js";
-  import type { SuperValidated, Infer } from "sveltekit-superforms";
-  import { filesProxy, dateProxy } from "sveltekit-superforms";
+  import type { schema } from "./schema.js";
+  import type { Infer, SuperForm } from "sveltekit-superforms";
+  import { dateProxy, filesFieldProxy } from "sveltekit-superforms";
 
-  export let value: SuperValidated<Infer<ReportSchema>>;
-  export let label: string | undefined = undefined;
+  export let superform: SuperForm<Infer<typeof schema>>;
+  export let label: string;
+  export let index: number;
 
-  const images = filesProxy(value, "images");
-  const reportDate = dateProxy(value, "reportDate", { format: "date" });
+  const reportDate = dateProxy(superform, `reports[${index}].reportDate`);
 
-  //   export let errors: string[] | undefined = undefined;
-  //   export let constraints: InputConstraint | undefined = undefined;
+  const { errors } = superform;
+
+  const { values: images, valueErrors: imagesErrors } = filesFieldProxy(
+    superform,
+    `reports[${index}].images`
+  );
 </script>
 
 <div class=" border border-solid border-gray-100 p-4 rounded-lg">
@@ -25,9 +29,9 @@
       class="input input-bordered"
       bind:value={$reportDate}
     />
-    {#if $reportDate}
+    {#if $errors.reports?.[index]?.reportDate}
       <br />
-      <span class="invalid">{$reportDate}</span>
+      <span class="invalid">{$errors.reports?.[index]?.reportDate}</span>
     {/if}
   </label>
 
@@ -43,13 +47,11 @@
       class="file-input file-input-bordered"
     />
     <ul class="invalid">
-      {#if $images?._errors}
-        {#each $images?._errors as error, i}
-          {#if error}
-            <li>Image {i + 1}: {error}</li>
-          {/if}
-        {/each}
-      {/if}
+      {#each $imagesErrors as error, i}
+        {#if error}
+          <li>Image {i + 1}: {error}</li>
+        {/if}
+      {/each}
     </ul>
   </label>
 </div>
