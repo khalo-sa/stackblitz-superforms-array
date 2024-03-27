@@ -7,7 +7,9 @@
   export let label: string;
   export let index: number;
 
-  const reportDate = dateProxy(superform, `reports[${index}].reportDate`);
+  const reportDate = dateProxy(superform, `reports[${index}].reportDate`, {
+    format: "date",
+  });
 
   const { errors } = superform;
 
@@ -25,6 +27,7 @@
     <div class="label">Report Date:</div>
     <input
       type="date"
+      name={`reports[${index}].reportDate`}
       placeholder=""
       class="input input-bordered"
       bind:value={$reportDate}
@@ -41,7 +44,7 @@
     <input
       type="file"
       multiple
-      name="images"
+      name={`reports[${index}].images`}
       accept="image/png, image/jpeg"
       bind:files={$images}
       class="file-input file-input-bordered"
